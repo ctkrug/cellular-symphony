@@ -44,7 +44,7 @@ grid and sonifies each new row the instant it's computed — the automaton
 - [x] Transport: play / pause / reset, tempo control (1–12 steps/sec), mute (persisted)
 - [x] Live 8-bit rule editor with instant visual + audio feedback
 - [x] Curated preset rule gallery (rule 30, 90, 110, 184, ...)
-- [ ] Shareable URL state (rule, seed, scale, root, tempo)
+- [x] Shareable URL state (rule, seed, scale, root, tempo) with a copy-link button
 - [x] Fully static, relative-path build deployable to a subpath
 
 See [`docs/VISION.md`](docs/VISION.md) for the full design rationale and
