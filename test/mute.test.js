@@ -43,4 +43,26 @@ describe('setStoredMute', () => {
   it('does not throw when storage is unavailable', () => {
     expect(() => setStoredMute(true, null)).not.toThrow();
   });
+
+  it('swallows a storage that throws on setItem (private mode / quota)', () => {
+    const throwing = {
+      getItem: () => null,
+      setItem: () => {
+        throw new DOMException('QuotaExceededError');
+      },
+    };
+    expect(() => setStoredMute(true, throwing)).not.toThrow();
+  });
+});
+
+describe('getStoredMute resilience', () => {
+  it('defaults to false when getItem throws instead of propagating', () => {
+    const throwing = {
+      getItem: () => {
+        throw new DOMException('SecurityError');
+      },
+      setItem: () => {},
+    };
+    expect(getStoredMute(throwing)).toBe(false);
+  });
 });
