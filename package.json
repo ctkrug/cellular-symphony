@@ -5,6 +5,17 @@
   "type": "module",
   "description": "A cellular automaton that composes its own generative music, live.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctkrug/cellular-symphony.git"
+  },
+  "homepage": "https://github.com/ctkrug/cellular-symphony#readme",
+  "bugs": {
+    "url": "https://github.com/ctkrug/cellular-symphony/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
