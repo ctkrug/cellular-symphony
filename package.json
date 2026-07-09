@@ -1,0 +1,20 @@
+{
+  "name": "cellular-symphony",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A cellular automaton that composes its own generative music, live.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^9.9.0",
+    "vite": "^5.4.0",
+    "vitest": "^2.1.0"
+  }
+}
