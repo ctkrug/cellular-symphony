@@ -49,6 +49,18 @@ describe('parseState', () => {
     expect(parseState('foo=bar&baz=qux')).toEqual({});
   });
 
+  it('returns an empty object for non-string, non-URLSearchParams input', () => {
+    expect(parseState(null)).toEqual({});
+    expect(parseState(undefined)).toEqual({});
+    expect(parseState(42)).toEqual({});
+  });
+
+  it('drops a digit string too large to be a safe integer', () => {
+    // Passes the /^-?\d+$/ shape check but overflows Number's safe range.
+    expect(parseState('seed=99999999999999999999').seed).toBeUndefined();
+    expect(parseState('rule=99999999999999999999').rule).toBeUndefined();
+  });
+
   it('ignores unknown parameters but keeps known ones', () => {
     expect(parseState('rule=45&nonsense=1&color=red')).toEqual({ rule: 45 });
   });
