@@ -36,16 +36,16 @@ grid and sonifies each new row the instant it's computed — the automaton
 - Rule, seed, tempo, and scale are encoded in the URL so a link reproduces
   the exact same visual + musical sequence.
 
-## Planned features
+## Features
 
-- [ ] Elementary CA engine (rule 0–255, toroidal wrap, seedable initial row)
-- [ ] Cell → scale-quantized note mapping (major / minor / pentatonic, root note)
-- [ ] Oscillator-based synth voice with ADSR envelope and a shared limiter
-- [ ] Transport: play / pause / reset, tempo control, mute (persisted)
-- [ ] Live 8-bit rule editor with instant visual + audio feedback
-- [ ] Curated preset rule gallery (rule 30, 90, 110, 184, ...)
+- [x] Elementary CA engine (rule 0–255, toroidal or dead-edge boundary, seedable initial row)
+- [x] Cell → scale-quantized note mapping (major / minor / pentatonic, root note)
+- [x] Oscillator-based synth voice with ADSR envelope and a shared compressor
+- [x] Transport: play / pause / reset, tempo control (1–12 steps/sec), mute (persisted)
+- [x] Live 8-bit rule editor with instant visual + audio feedback
+- [x] Curated preset rule gallery (rule 30, 90, 110, 184, ...)
 - [ ] Shareable URL state (rule, seed, scale, root, tempo)
-- [ ] Fully static, relative-path build deployable to a subpath
+- [x] Fully static, relative-path build deployable to a subpath
 
 See [`docs/VISION.md`](docs/VISION.md) for the full design rationale and
 [`docs/BACKLOG.md`](docs/BACKLOG.md) for the build plan.
