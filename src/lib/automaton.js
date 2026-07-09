@@ -7,15 +7,21 @@
  * Compute the next row from the current row under the given rule number.
  * @param {number} rule - 0-255 Wolfram rule number.
  * @param {number[]} row - current row of 0/1 cell states.
+ * @param {'wrap'|'dead'} [boundary] - 'wrap' (toroidal, default) treats the
+ *   edges as connected; 'dead' treats off-grid neighbors as always 0.
  * @returns {number[]} the next row, same length as `row`.
  */
-export function nextRow(rule, row) {
+export function nextRow(rule, row, boundary = 'wrap') {
   const width = row.length;
   const next = new Array(width);
+  const at = (i) => {
+    if (boundary === 'dead') return i < 0 || i >= width ? 0 : row[i];
+    return row[(i + width) % width];
+  };
   for (let i = 0; i < width; i += 1) {
-    const left = row[(i - 1 + width) % width];
+    const left = at(i - 1);
     const center = row[i];
-    const right = row[(i + 1) % width];
+    const right = at(i + 1);
     const neighborhood = (left << 2) | (center << 1) | right;
     next[i] = (rule >> neighborhood) & 1;
   }
