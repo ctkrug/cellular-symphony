@@ -143,13 +143,17 @@ function setPlaying(playing) {
   playButton.setAttribute('aria-pressed', String(playing));
   playButton.textContent = playing ? 'Pause' : 'Play';
   statusText.textContent = playing ? 'running' : 'idle';
+  // Always tear down the existing step loop first so entering setPlaying(true)
+  // while already running (e.g. selecting a preset) re-arms a single timer
+  // chain instead of orphaning the previous one.
+  if (stepTimer) {
+    window.clearTimeout(stepTimer);
+    stepTimer = null;
+  }
   if (playing) {
     ensureAudio();
     step();
     scheduleNextStep();
-  } else if (stepTimer) {
-    window.clearTimeout(stepTimer);
-    stepTimer = null;
   }
 }
 
