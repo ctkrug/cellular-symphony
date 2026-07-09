@@ -19,6 +19,8 @@ const ctx = canvas.getContext('2d');
 const waveform = document.getElementById('waveform');
 const playButton = document.getElementById('play-toggle');
 const resetButton = document.getElementById('reset-button');
+const shareButton = document.getElementById('share-button');
+const toast = document.getElementById('toast');
 const muteButton = document.getElementById('mute-toggle');
 const statusText = document.getElementById('status-text');
 const ruleNumberEl = document.getElementById('rule-number');
@@ -205,7 +207,38 @@ function renderRuleToggles() {
     });
 }
 
+let toastTimer = null;
+function showToast(message) {
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  if (toastTimer) window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    toast.classList.remove('show');
+    toast.textContent = '';
+  }, 1600);
+}
+
 playButton.addEventListener('click', () => setPlaying(!state.playing));
+
+if (shareButton) {
+  shareButton.addEventListener('click', async () => {
+    updateUrl();
+    const url = typeof window.location !== 'undefined' ? window.location.href : '';
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        showToast('link copied');
+      } else {
+        showToast('copy from address bar');
+      }
+    } catch {
+      // Clipboard blocked (insecure context, permission denied) — the URL is
+      // still in the address bar, so tell the user to copy it manually.
+      showToast('copy from address bar');
+    }
+  });
+}
 
 resetButton.addEventListener('click', () => {
   setPlaying(false);
