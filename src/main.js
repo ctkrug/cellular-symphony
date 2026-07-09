@@ -55,9 +55,14 @@ state.rows = [state.row];
 function updateUrl() {
   if (typeof window.history?.replaceState !== 'function') return;
   const query = serializeState(state);
-  // replaceState (not pushState) keeps every control change out of the
-  // back-button history, so dragging the tempo slider can't spam it.
-  window.history.replaceState(null, '', `?${query}`);
+  try {
+    // replaceState (not pushState) keeps every control change out of the
+    // back-button history, so dragging the tempo slider can't spam it.
+    window.history.replaceState(null, '', `?${query}`);
+  } catch {
+    // Some browsers reject replaceState on a file:// document; the app still
+    // works, links just aren't shareable in that context.
+  }
 }
 
 let audioContext = null;
