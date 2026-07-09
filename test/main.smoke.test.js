@@ -28,9 +28,20 @@ function installDom() {
     <select id="root-select"></select>
     <div id="preset-list"></div>
   `;
+  window.__fillRect = vi.fn();
   window.HTMLCanvasElement.prototype.getContext = () => ({
-    fillRect: vi.fn(),
+    fillRect: window.__fillRect,
     setTransform: vi.fn(),
+  });
+  // jsdom reports a zero-size canvas by default; give it a real height so
+  // maxVisibleRows()/prefillStage() have room to evolve more than one row.
+  window.HTMLCanvasElement.prototype.getBoundingClientRect = () => ({
+    width: 480,
+    height: 200,
+    top: 0,
+    left: 0,
+    right: 480,
+    bottom: 200,
   });
   window.matchMedia =
     window.matchMedia ||
@@ -221,6 +232,15 @@ describe('URL state (Story 8)', () => {
     expect(rule).toBeLessThanOrEqual(255);
     // Unknown scale dropped -> default 'major'.
     expect(document.getElementById('scale-select').value).toBe('major');
+  });
+
+  it('pre-fills the stage with an evolved preview on load (no empty panel)', async () => {
+    // Rule 90 (Sierpinski) evolved from a fixed seed fills many cells across
+    // the ~20 visible rows; a non-prefilled stage would draw only one row.
+    setSearch('?rule=90&seed=1&scale=major&root=C&tempo=4');
+    await loadMain();
+    // One background fill + one per live cell across all pre-evolved rows.
+    expect(window.__fillRect.mock.calls.length).toBeGreaterThan(50);
   });
 });
 
