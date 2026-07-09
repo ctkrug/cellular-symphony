@@ -6,6 +6,7 @@ import { createAudioGraph, triggerNote } from './lib/synth.js';
 import { getStoredMute, setStoredMute } from './lib/mute.js';
 import { TEMPO_MAX, TEMPO_MIN, clampTempo, tempoToIntervalMs } from './lib/tempo.js';
 import { PRESETS } from './lib/presets.js';
+import { parseState, serializeState } from './lib/urlState.js';
 
 const WIDTH = 48;
 const CELL_HEIGHT = 10;
@@ -28,19 +29,34 @@ const scaleSelect = document.getElementById('scale-select');
 const rootSelect = document.getElementById('root-select');
 const presetListEl = document.getElementById('preset-list');
 
+// A shared link (?rule=&seed=&scale=&root=&tempo=) reproduces an exact
+// pattern; anything absent or invalid falls back to a fresh random value so
+// a bare load still gets the "reload = new pattern" wow moment.
+const shared = parseState(
+  typeof window.location !== 'undefined' ? window.location.search : '',
+);
+
 const state = {
-  rule: randomRule(),
-  seed: randomSeed(),
+  rule: shared.rule ?? randomRule(),
+  seed: shared.seed ?? randomSeed(),
   row: null,
   rows: [],
   playing: false,
   muted: getStoredMute(),
-  tempo: clampTempo(Number(tempoInput.value) || 4),
-  scale: 'major',
-  root: 'C',
+  tempo: shared.tempo ?? clampTempo(Number(tempoInput.value) || 4),
+  scale: shared.scale ?? 'major',
+  root: shared.root ?? 'C',
 };
 state.row = seedRowFromSeed(WIDTH, state.seed);
 state.rows = [state.row];
+
+function updateUrl() {
+  if (typeof window.history?.replaceState !== 'function') return;
+  const query = serializeState(state);
+  // replaceState (not pushState) keeps every control change out of the
+  // back-button history, so dragging the tempo slider can't spam it.
+  window.history.replaceState(null, '', `?${query}`);
+}
 
 let audioContext = null;
 let masterGain = null;
@@ -183,6 +199,7 @@ function renderRuleToggles() {
         state.rule = toggleBit(state.rule, neighborhood);
         renderRuleNumber();
         button.setAttribute('aria-pressed', String(getBit(state.rule, neighborhood) === 1));
+        updateUrl();
       });
       ruleTogglesEl.appendChild(button);
     });
@@ -196,6 +213,7 @@ resetButton.addEventListener('click', () => {
   state.row = seedRowFromSeed(WIDTH, state.seed);
   state.rows = [state.row];
   draw();
+  updateUrl();
 });
 
 muteButton.addEventListener('click', () => {
@@ -209,9 +227,11 @@ muteButton.addEventListener('click', () => {
 
 tempoInput.min = String(TEMPO_MIN);
 tempoInput.max = String(TEMPO_MAX);
+tempoInput.value = String(state.tempo);
 tempoInput.addEventListener('input', () => {
   state.tempo = clampTempo(Number(tempoInput.value));
   tempoValueEl.textContent = `${state.tempo}/s`;
+  updateUrl();
 });
 
 SCALE_NAMES.forEach((name) => {
@@ -223,6 +243,7 @@ SCALE_NAMES.forEach((name) => {
 scaleSelect.value = state.scale;
 scaleSelect.addEventListener('change', () => {
   state.scale = scaleSelect.value;
+  updateUrl();
 });
 
 NOTE_NAMES.forEach((name) => {
@@ -234,6 +255,7 @@ NOTE_NAMES.forEach((name) => {
 rootSelect.value = state.root;
 rootSelect.addEventListener('change', () => {
   state.root = rootSelect.value;
+  updateUrl();
 });
 
 PRESETS.forEach((preset) => {
@@ -249,6 +271,7 @@ PRESETS.forEach((preset) => {
     renderRuleNumber();
     renderRuleToggles();
     draw();
+    updateUrl();
     setPlaying(true);
   });
   presetListEl.appendChild(button);
