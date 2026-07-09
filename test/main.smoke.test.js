@@ -16,8 +16,10 @@ function installDom() {
     <div id="waveform"></div>
     <button id="play-toggle" type="button" aria-pressed="false">Play</button>
     <button id="reset-button" type="button">Reset</button>
+    <button id="share-button" type="button">Share</button>
     <button id="mute-toggle" type="button" aria-pressed="false">🔊</button>
     <p id="status-text"></p>
+    <p id="toast" role="status" aria-live="polite"></p>
     <div id="rule-number"></div>
     <div id="rule-toggles"></div>
     <input id="tempo-input" type="range" min="1" max="12" value="4" />
@@ -179,6 +181,36 @@ describe('URL state (Story 8)', () => {
     scaleSelect.value = 'minor';
     scaleSelect.dispatchEvent(new window.Event('change'));
     expect(new URLSearchParams(window.location.search).get('scale')).toBe('minor');
+  });
+
+  it('copies the current URL and shows a toast when Share is clicked', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('navigator', { clipboard: { writeText } });
+    setSearch('?rule=90&seed=42&scale=major&root=C&tempo=4');
+    try {
+      await loadMain();
+      document.getElementById('share-button').click();
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(writeText).toHaveBeenCalledTimes(1);
+      expect(writeText.mock.calls[0][0]).toContain('rule=90');
+      expect(document.getElementById('toast').textContent).toBe('link copied');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('falls back to a manual-copy toast when clipboard is unavailable', async () => {
+    vi.stubGlobal('navigator', {});
+    setSearch('?rule=90&seed=42&scale=major&root=C&tempo=4');
+    try {
+      await loadMain();
+      document.getElementById('share-button').click();
+      await Promise.resolve();
+      expect(document.getElementById('toast').textContent).toBe('copy from address bar');
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it('ignores a malformed query and falls back to a valid random state', async () => {
