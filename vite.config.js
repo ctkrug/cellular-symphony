@@ -8,5 +8,12 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['test/**/*.test.js'],
+    coverage: {
+      provider: 'v8',
+      // Core logic is the coverage target; main.js is DOM/audio glue exercised
+      // by the jsdom smoke test rather than measured for a line percentage.
+      include: ['src/lib/**'],
+      reporter: ['text', 'html'],
+    },
   },
 });
