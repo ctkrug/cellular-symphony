@@ -63,7 +63,7 @@ must land before anything else.
 
 ## Epic 3 — Shareability, presets, and design polish
 
-- [ ] **Story 8: URL-encoded state for sharing**
+- [x] **Story 8: URL-encoded state for sharing**
   - Loading a URL with `?rule=90&seed=...&scale=pentatonic&root=A`
     reproduces the exact same visual pattern and note sequence
     deterministically (unit test on the parse/serialize round-trip).
