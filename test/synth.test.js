@@ -32,6 +32,18 @@ describe('envelopeGainAt', () => {
   it('handles a zero-attack envelope without dividing by zero', () => {
     expect(envelopeGainAt(0, { attack: 0 })).toBe(1);
   });
+
+  it('is partway between sustain and 0 midway through the release phase', () => {
+    const env = { attack: 0.01, decay: 0.05, sustain: 0.4, hold: 0.1, release: 0.2 };
+    const midRelease = env.attack + env.decay + env.hold + env.release / 2;
+    expect(envelopeGainAt(midRelease, env)).toBeCloseTo(0.2, 5);
+  });
+
+  it('drops straight to 0 for a zero-release envelope without dividing by zero', () => {
+    const env = { attack: 0.01, decay: 0.05, sustain: 0.4, hold: 0.1, release: 0 };
+    const releaseStart = env.attack + env.decay + env.hold;
+    expect(envelopeGainAt(releaseStart, env)).toBe(0);
+  });
 });
 
 describe('envelopeDuration', () => {

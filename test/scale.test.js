@@ -44,6 +44,10 @@ describe('scaleNotes', () => {
     const notes = scaleNotes('major', 'C', 2);
     expect(notes).toHaveLength(SCALES.major.length * 2);
   });
+
+  it('throws on an unknown scale name', () => {
+    expect(() => scaleNotes('lydian', 'C', 2)).toThrow(/Unknown scale/);
+  });
 });
 
 describe('noteForColumn', () => {
@@ -75,5 +79,28 @@ describe('noteForColumn', () => {
     const freq = noteForColumn(5, 20);
     expect(freq).toBeGreaterThan(0);
     expect(Number.isFinite(freq)).toBe(true);
+  });
+
+  it('stays finite for a degenerate width of 0', () => {
+    const freq = noteForColumn(0, 0);
+    expect(Number.isFinite(freq)).toBe(true);
+    expect(freq).toBeGreaterThan(0);
+  });
+
+  it('clamps a column past the width to the highest note instead of undefined', () => {
+    const width = 16;
+    const overshoot = noteForColumn(width + 5, width, { scale: 'major', root: 'C' });
+    const last = noteForColumn(width - 1, width, { scale: 'major', root: 'C' });
+    const topNote = midiToFrequency(scaleNotes('major', 'C', 3).at(-1));
+    expect(Number.isFinite(overshoot)).toBe(true);
+    expect(overshoot).toBeGreaterThanOrEqual(last);
+    expect(overshoot).toBeCloseTo(topNote, 5);
+  });
+
+  it('clamps a negative column to the lowest note instead of undefined', () => {
+    const freq = noteForColumn(-3, 16, { scale: 'major', root: 'C' });
+    const lowest = noteForColumn(0, 16, { scale: 'major', root: 'C' });
+    expect(Number.isFinite(freq)).toBe(true);
+    expect(freq).toBe(lowest);
   });
 });
