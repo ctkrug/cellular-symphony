@@ -13,21 +13,75 @@
       type="image/svg+xml"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2314161a'/%3E%3Crect x='4' y='4' width='6' height='6' fill='%23f2a93b'/%3E%3Crect x='12' y='4' width='6' height='6' fill='%2324282f'/%3E%3Crect x='20' y='4' width='6' height='6' fill='%23f2a93b'/%3E%3Crect x='4' y='12' width='6' height='6' fill='%2324282f'/%3E%3Crect x='12' y='12' width='6' height='6' fill='%23f2a93b'/%3E%3Crect x='20' y='12' width='6' height='6' fill='%2324282f'/%3E%3Crect x='4' y='20' width='6' height='6' fill='%23f2a93b'/%3E%3Crect x='12' y='20' width='6' height='6' fill='%2324282f'/%3E%3Crect x='20' y='20' width='6' height='6' fill='%23f2a93b'/%3E%3C/svg%3E"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
     <main id="app">
       <header class="panel-header">
-        <h1 class="wordmark">Cellular Symphony</h1>
+        <h1 class="wordmark">Cellular<span class="wordmark-accent">Symphony</span></h1>
         <p class="tagline">a cellular automaton that composes its own music, live</p>
       </header>
-      <section class="stage">
-        <canvas id="automaton-canvas" aria-label="Cellular automaton visualization"></canvas>
-      </section>
-      <section class="transport">
-        <button id="play-toggle" type="button" aria-pressed="false">Play</button>
-        <span id="status-text" role="status" aria-live="polite">idle</span>
-      </section>
+
+      <div class="rack">
+        <section class="stage-panel" aria-label="Automaton stage">
+          <canvas id="automaton-canvas" aria-label="Cellular automaton visualization"></canvas>
+          <div class="waveform" id="waveform" aria-hidden="true"></div>
+        </section>
+
+        <aside class="control-rack">
+          <div class="module rule-module">
+            <div class="module-label">Rule</div>
+            <div class="rule-readout" id="rule-number">000</div>
+            <div class="rule-toggles" id="rule-toggles" role="group" aria-label="Rule bit toggles"></div>
+          </div>
+
+          <div class="module transport-module">
+            <div class="transport-buttons">
+              <button id="play-toggle" type="button" class="btn btn-primary" aria-pressed="false">
+                Play
+              </button>
+              <button id="reset-button" type="button" class="btn">Reset</button>
+              <button
+                id="mute-toggle"
+                type="button"
+                class="btn btn-icon"
+                aria-pressed="false"
+                aria-label="Mute"
+              >
+                🔊
+              </button>
+            </div>
+            <label class="field">
+              <span>Tempo</span>
+              <input id="tempo-input" type="range" min="1" max="12" step="1" value="4" />
+              <span id="tempo-value" class="digit-readout-sm">4/s</span>
+            </label>
+            <p id="status-text" role="status" aria-live="polite" class="status-text">idle</p>
+          </div>
+
+          <div class="module music-module">
+            <label class="field">
+              <span>Scale</span>
+              <select id="scale-select"></select>
+            </label>
+            <label class="field">
+              <span>Root</span>
+              <select id="root-select"></select>
+            </label>
+          </div>
+
+          <div class="module presets-module">
+            <div class="module-label">Presets</div>
+            <div class="preset-list" id="preset-list"></div>
+          </div>
+        </aside>
+      </div>
     </main>
     <script type="module" src="./src/main.js"></script>
   </body>
