@@ -1,4 +1,5 @@
 import { nextRow, seedRow } from './lib/automaton.js';
+import { playTone } from './lib/tone.js';
 
 const RULE = 30;
 const WIDTH = 64;
@@ -40,15 +41,7 @@ function tick() {
 
 function beep() {
   if (!audioContext) audioContext = new AudioContext();
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-  gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.2, audioContext.currentTime + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.3);
-  oscillator.connect(gain).connect(audioContext.destination);
-  oscillator.frequency.value = 440;
-  oscillator.start();
-  oscillator.stop(audioContext.currentTime + 0.3);
+  playTone(audioContext, 440);
 }
 
 playButton.addEventListener('click', () => {
