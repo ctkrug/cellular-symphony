@@ -147,4 +147,25 @@ describe('presets', () => {
     const buttons = document.querySelectorAll('#preset-list .preset-button');
     expect(buttons.length).toBeGreaterThanOrEqual(6);
   });
+
+  it('selecting a preset while playing does not spawn a second step loop', async () => {
+    // prefers-reduced-motion so no transient pulse timers pollute the count.
+    window.matchMedia = () => ({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    });
+    vi.useFakeTimers();
+    try {
+      await loadMain();
+      document.getElementById('play-toggle').click();
+      // Exactly one pending step timer while playing.
+      expect(vi.getTimerCount()).toBe(1);
+      document.querySelector('#preset-list .preset-button').click();
+      // Still exactly one — the old timer must be cleared, not orphaned.
+      expect(vi.getTimerCount()).toBe(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
