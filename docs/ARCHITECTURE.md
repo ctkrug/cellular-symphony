@@ -23,6 +23,7 @@ src/
     tempo.js          steps/sec clamping and ms-interval conversion
     mute.js           localStorage-backed mute persistence
     presets.js         curated rule gallery data
+    urlState.js       shareable rule/seed/scale/root/tempo URL codec
 ```
 
 Every module under `src/lib/` is DOM/Audio-free except `synth.js`, which
@@ -33,10 +34,13 @@ nodes.
 
 ## Data flow (the wow moment)
 
-1. On load, `main.js` draws a random `rule` (0-255) and a random integer
-   `seed`, then expands `seed` into the initial row via
-   `seedRowFromSeed(width, seed)` — deterministic given the seed, but the
-   seed itself is drawn fresh each page load, so two loads never match.
+1. On load, `main.js` first reads any shared state from `location.search`
+   via `parseState` (`urlState.js`); each field absent or invalid falls back
+   to a random `rule` (0-255) / integer `seed`. It then expands `seed` into
+   the initial row via `seedRowFromSeed(width, seed)` — deterministic given
+   the seed, but a bare load draws it fresh, so two loads never match.
+   Every control change mirrors the state back to the URL through
+   `serializeState` + `history.replaceState`, making patterns shareable.
 2. Pressing Play calls `ensureAudio()` (lazily creates the `AudioContext` +
    master gain -> compressor graph, required by the browser's autoplay
    policy to happen on a user gesture) and starts the step loop.
