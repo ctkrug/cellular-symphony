@@ -13,7 +13,11 @@ const STORAGE_KEY = 'cellular-symphony:muted';
  */
 export function getStoredMute(storage = safeLocalStorage()) {
   if (!storage) return false;
-  return storage.getItem(STORAGE_KEY) === 'true';
+  try {
+    return storage.getItem(STORAGE_KEY) === 'true';
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -23,7 +27,12 @@ export function getStoredMute(storage = safeLocalStorage()) {
  */
 export function setStoredMute(muted, storage = safeLocalStorage()) {
   if (!storage) return;
-  storage.setItem(STORAGE_KEY, muted ? 'true' : 'false');
+  try {
+    storage.setItem(STORAGE_KEY, muted ? 'true' : 'false');
+  } catch {
+    // Storage present but write rejected (private mode, quota) — the mute
+    // toggle still works this session, it just won't persist.
+  }
 }
 
 function safeLocalStorage() {
