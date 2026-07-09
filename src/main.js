@@ -167,6 +167,7 @@ function renderRuleToggles() {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'rule-toggle';
+      button.style.setProperty('--i', String(reversedIndex));
       button.dataset.neighborhood = String(neighborhood);
       button.setAttribute('aria-pressed', String(getBit(state.rule, neighborhood) === 1));
       button.setAttribute(
