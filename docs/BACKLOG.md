@@ -76,7 +76,7 @@ must land before anything else.
   - Selecting a preset immediately loads that rule and restarts playback
     from a fresh seed.
 
-- [ ] **Story 10: design polish pass**
+- [x] **Story 10: design polish pass**
   - The built page matches `docs/DESIGN.md`'s direction and tokens: fonts
     loaded, brass/cyan accents applied, panel depth/shadow present (verified
     manually in QA and noted in the STATUS `memory` field).
@@ -100,7 +100,7 @@ must land before anything else.
   - Opening `dist/index.html` (or serving it from an arbitrary subpath)
     loads with no console errors and both visuals and audio function.
 
-- [ ] **Story 13: accessibility and reduced-motion pass**
+- [x] **Story 13: accessibility and reduced-motion pass**
   - `prefers-reduced-motion` disables continuous row slide-in and LED pulse
     animation while keeping the simulation and audio fully functional
     (manually verified in QA).
