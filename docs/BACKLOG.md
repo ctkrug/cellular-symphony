@@ -6,7 +6,7 @@ must land before anything else.
 
 ## Epic 1 — Core wow moment: automaton + synced audio playback
 
-- [ ] **Story 1 (wow moment): random rule auto-plays in sync on first Play**
+- [x] **Story 1 (wow moment): random rule auto-plays in sync on first Play**
   - Loading the page and clicking a single Play control starts a random
     elementary CA rule scrolling AND the first audible note fires within
     100ms of the row that triggered it (no perceptible lag between visual
@@ -17,14 +17,14 @@ must land before anything else.
   - Reloading the page selects a new random rule and seed each time (two
     consecutive loads do not reproduce the same initial row).
 
-- [ ] **Story 2: rule-bit toggle nudges both visual and audio live**
+- [x] **Story 2: rule-bit toggle nudges both visual and audio live**
   - Toggling any of the 8 rule-bit switches while playing changes the next
     computed row's pattern within one step, with no restart required.
   - A unit test asserts that flipping a bit changes both the computed next
     row and its mapped notes for a controlled before/after rule.
   - The displayed rule number (0–255) updates immediately on toggle.
 
-- [ ] **Story 3: elementary CA engine is correct and isolated**
+- [x] **Story 3: elementary CA engine is correct and isolated**
   - Given rule 30 and a fixed single-cell seed row, the next N rows match a
     precomputed reference sequence (unit test).
   - Edges wrap toroidally by default; boundary mode is a parameter, not
@@ -34,14 +34,14 @@ must land before anything else.
 
 ## Epic 2 — Musical mapping and audio engine quality
 
-- [ ] **Story 4: cell-to-note mapping quantized to a musical scale**
+- [x] **Story 4: cell-to-note mapping quantized to a musical scale**
   - Given a scale (major / minor / pentatonic) and root note, the mapping
     function returns only pitches within that scale for every live column
     (unit test enumerates all columns for each scale).
   - Changing scale or root note while playing takes effect on the next row
     without overlapping unreleased notes or audio glitches.
 
-- [ ] **Story 5: oscillator-based synth voice with ADSR envelope**
+- [x] **Story 5: oscillator-based synth voice with ADSR envelope**
   - The audio module contains zero references to audio file assets
     (`.mp3`/`.wav`/`.ogg`) — verifiable by grep.
   - Each triggered note ramps gain up then down rather than clicking on/off:
@@ -50,13 +50,13 @@ must land before anything else.
   - A shared master gain feeds a limiter/compressor so simultaneous notes
     never clip above 0dBFS.
 
-- [ ] **Story 6: tempo and play/pause/reset transport**
+- [x] **Story 6: tempo and play/pause/reset transport**
   - Play starts stepping at the selected tempo; Pause halts stepping and all
     audio scheduling immediately (no notes fire after pause).
   - Reset re-seeds the top row and clears the stage without a page reload.
   - Tempo is clamped to 1–12 steps/sec in code (not only via the UI control).
 
-- [ ] **Story 7: mute toggle persists across reloads**
+- [x] **Story 7: mute toggle persists across reloads**
   - Toggling mute sets master gain to 0 without pausing the simulation or
     visuals.
   - Mute state is written to `localStorage` and restored on next load.
@@ -70,7 +70,7 @@ must land before anything else.
   - Changing a control updates the URL via `history.replaceState` — no full
     reload, no history spam per keystroke/drag.
 
-- [ ] **Story 9: curated preset rule gallery**
+- [x] **Story 9: curated preset rule gallery**
   - At least 6 curated rules (e.g. 30, 90, 110, 184, 60, 150) are selectable
     from a preset picker, each with a short human-readable label.
   - Selecting a preset immediately loads that rule and restarts playback
@@ -87,13 +87,13 @@ must land before anything else.
 
 ## Epic 4 — Reliability and deployability
 
-- [ ] **Story 11: unit test suite runs in CI**
+- [x] **Story 11: unit test suite runs in CI**
   - `npm test` runs headlessly in GitHub Actions and exits 0 on a clean
     checkout.
   - Coverage includes at minimum: the rule-30 reference sequence, scale
     quantization, and mute-persistence logic.
 
-- [ ] **Story 12: static build is fully relative-path and subpath-deployable**
+- [x] **Story 12: static build is fully relative-path and subpath-deployable**
   - `npm run build` produces `dist/` whose `index.html` references all
     assets via relative paths only (no leading `/`) — verified by grepping
     the build output for `href="/` / `src="/"`.
