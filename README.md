@@ -1,5 +1,7 @@
 # Cellular Symphony
 
+[![CI](https://github.com/ctkrug/cellular-symphony/actions/workflows/ci.yml/badge.svg)](https://github.com/ctkrug/cellular-symphony/actions/workflows/ci.yml)
+
 A cellular automaton that composes its own generative music, live. Every cell
 state maps to a note and timbre, so a pattern's evolution is something you
 watch **and** hear unfold together — no pre-baked samples, no separate score.
@@ -62,6 +64,14 @@ npm run dev      # local dev server
 npm test         # unit tests
 npm run build    # static production build in dist/
 ```
+
+| Script | What it does |
+|---|---|
+| `npm run dev` | Vite dev server with hot reload |
+| `npm test` | Vitest unit + DOM smoke tests |
+| `npm run lint` | ESLint over the whole repo |
+| `npm run build` | Static production build to `dist/` (relative paths, subpath-safe) |
+| `npm run preview` | Serve the production build locally |
 
 ## License
 
