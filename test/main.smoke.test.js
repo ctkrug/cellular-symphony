@@ -234,6 +234,22 @@ describe('URL state (Story 8)', () => {
     expect(document.getElementById('scale-select').value).toBe('major');
   });
 
+  it('does not crash a control handler when replaceState throws (file://)', async () => {
+    setSearch('?rule=90&seed=42&scale=major&root=C&tempo=4');
+    await loadMain();
+    const original = window.history.replaceState.bind(window.history);
+    window.history.replaceState = () => {
+      throw new DOMException('SecurityError');
+    };
+    try {
+      expect(() => document.querySelector('#rule-toggles .rule-toggle').click()).not.toThrow();
+      // The rule still updated even though the URL write was rejected.
+      expect(document.getElementById('rule-number').textContent).toBe('218');
+    } finally {
+      window.history.replaceState = original;
+    }
+  });
+
   it('pre-fills the stage with an evolved preview on load (no empty panel)', async () => {
     // Rule 90 (Sierpinski) evolved from a fixed seed fills many cells across
     // the ~20 visible rows; a non-prefilled stage would draw only one row.
