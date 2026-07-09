@@ -1,0 +1,79 @@
+import { describe, expect, it } from 'vitest';
+import {
+  SCALES,
+  SCALE_NAMES,
+  midiToFrequency,
+  noteForColumn,
+  rootToMidi,
+  scaleNotes,
+} from '../src/lib/scale.js';
+
+describe('midiToFrequency', () => {
+  it('returns 440Hz for A4 (MIDI 69)', () => {
+    expect(midiToFrequency(69)).toBeCloseTo(440, 5);
+  });
+
+  it('returns 220Hz one octave below A4', () => {
+    expect(midiToFrequency(57)).toBeCloseTo(220, 5);
+  });
+});
+
+describe('rootToMidi', () => {
+  it('maps C to MIDI 60', () => {
+    expect(rootToMidi('C')).toBe(60);
+  });
+
+  it('throws on an unknown root', () => {
+    expect(() => rootToMidi('H')).toThrow();
+  });
+});
+
+describe('scaleNotes', () => {
+  it('every note is a scale member relative to the root, for every scale', () => {
+    SCALE_NAMES.forEach((scaleName) => {
+      const rootMidi = rootToMidi('C');
+      const notes = scaleNotes(scaleName, 'C', 3);
+      notes.forEach((midi) => {
+        const semitone = ((midi - rootMidi) % 12 + 12) % 12;
+        expect(SCALES[scaleName]).toContain(semitone);
+      });
+    });
+  });
+
+  it('spans the requested number of octaves', () => {
+    const notes = scaleNotes('major', 'C', 2);
+    expect(notes).toHaveLength(SCALES.major.length * 2);
+  });
+});
+
+describe('noteForColumn', () => {
+  it('returns only in-scale frequencies for every column across the width', () => {
+    const width = 64;
+    const root = 'A';
+    const scaleName = 'pentatonic';
+    const rootMidi = rootToMidi(root);
+    for (let column = 0; column < width; column += 1) {
+      const freq = noteForColumn(column, width, { scale: scaleName, root, octaves: 3 });
+      const midi = Math.round(12 * Math.log2(freq / 440) + 69);
+      const semitone = ((midi - rootMidi) % 12 + 12) % 12;
+      expect(SCALES[scaleName]).toContain(semitone);
+    }
+  });
+
+  it('maps the leftmost column to the lowest note and rightmost near the highest', () => {
+    const width = 32;
+    const low = noteForColumn(0, width, { scale: 'major', root: 'C' });
+    const high = noteForColumn(width - 1, width, { scale: 'major', root: 'C' });
+    expect(high).toBeGreaterThan(low);
+  });
+
+  it('does not throw or divide by zero for width 1', () => {
+    expect(() => noteForColumn(0, 1)).not.toThrow();
+  });
+
+  it('defaults to a valid frequency when options are omitted', () => {
+    const freq = noteForColumn(5, 20);
+    expect(freq).toBeGreaterThan(0);
+    expect(Number.isFinite(freq)).toBe(true);
+  });
+});
