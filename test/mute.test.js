@@ -65,4 +65,27 @@ describe('getStoredMute resilience', () => {
     };
     expect(getStoredMute(throwing)).toBe(false);
   });
+
+  it('resolves to no-storage (false) when there is no window at all', () => {
+    // The default node test env has no `window`; the resolver returns null and
+    // getStoredMute falls back to false without a passed-in storage.
+    expect(getStoredMute()).toBe(false);
+    expect(() => setStoredMute(true)).not.toThrow();
+  });
+
+  it('degrades safely when even accessing window.localStorage throws', () => {
+    // Some hardened/embedded browsers throw on the localStorage getter itself
+    // (not just on getItem) — the default-storage resolver must catch that.
+    vi.stubGlobal('window', {
+      get localStorage() {
+        throw new DOMException('SecurityError');
+      },
+    });
+    try {
+      expect(getStoredMute()).toBe(false);
+      expect(() => setStoredMute(true)).not.toThrow();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 });
