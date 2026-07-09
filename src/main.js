@@ -148,6 +148,21 @@ function step() {
   draw();
 }
 
+// Fill the stage with a static preview evolved silently from the current
+// seed so the hero panel shows the pattern on load / after reset instead of
+// sitting empty until Play — pressing Play then continues from this state.
+function prefillStage() {
+  const cap = maxVisibleRows();
+  let row = state.row;
+  const rows = [row];
+  for (let i = 1; i < cap; i += 1) {
+    row = nextRow(state.rule, row);
+    rows.unshift(row);
+  }
+  state.row = row;
+  state.rows = rows;
+}
+
 function scheduleNextStep() {
   stepTimer = window.setTimeout(() => {
     if (!state.playing) return;
@@ -245,6 +260,7 @@ resetButton.addEventListener('click', () => {
   state.seed = randomSeed();
   state.row = seedRowFromSeed(WIDTH, state.seed);
   state.rows = [state.row];
+  prefillStage();
   draw();
   updateUrl();
 });
@@ -303,6 +319,7 @@ PRESETS.forEach((preset) => {
     state.rows = [state.row];
     renderRuleNumber();
     renderRuleToggles();
+    prefillStage();
     draw();
     updateUrl();
     setPlaying(true);
@@ -322,4 +339,5 @@ window.addEventListener('resize', () => {
 renderRuleNumber();
 renderRuleToggles();
 resizeCanvas();
+prefillStage();
 draw();
