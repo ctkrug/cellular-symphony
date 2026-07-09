@@ -1,9 +1,13 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 async function loadMain() {
   vi.resetModules();
   await import(/* @vite-ignore */ '../src/main.js');
+}
+
+function setSearch(search) {
+  window.history.replaceState(null, '', `${window.location.pathname}${search}`);
 }
 
 function installDom() {
@@ -134,6 +138,57 @@ describe('mute', () => {
     muteButtonEl.click();
     expect(muteButtonEl.getAttribute('aria-pressed')).toBe('true');
     expect(muteButtonEl.textContent).toBe('🔇');
+  });
+});
+
+describe('URL state (Story 8)', () => {
+  beforeEach(() => {
+    installDom();
+  });
+
+  afterEach(() => {
+    setSearch('');
+  });
+
+  it('restores rule, scale, root, and tempo from the query string', async () => {
+    setSearch('?rule=90&seed=42&scale=pentatonic&root=A&tempo=9');
+    await loadMain();
+    expect(document.getElementById('rule-number').textContent).toBe('090');
+    expect(document.getElementById('scale-select').value).toBe('pentatonic');
+    expect(document.getElementById('root-select').value).toBe('A');
+    expect(document.getElementById('tempo-input').value).toBe('9');
+    expect(document.getElementById('tempo-value').textContent).toBe('9/s');
+  });
+
+  it('reflects a rule-bit toggle back into the URL without adding history', async () => {
+    setSearch('?rule=90&seed=42&scale=major&root=C&tempo=4');
+    const historyLength = window.history.length;
+    await loadMain();
+    document.querySelector('#rule-toggles .rule-toggle').click();
+    const params = new URLSearchParams(window.location.search);
+    // Toggling bit 7 (the first rendered switch) flips rule 90 -> 218.
+    expect(params.get('rule')).toBe('218');
+    expect(params.get('seed')).toBe('42');
+    expect(window.history.length).toBe(historyLength);
+  });
+
+  it('writes the current scale selection into the URL on change', async () => {
+    setSearch('?rule=90&seed=42&scale=major&root=C&tempo=4');
+    await loadMain();
+    const scaleSelect = document.getElementById('scale-select');
+    scaleSelect.value = 'minor';
+    scaleSelect.dispatchEvent(new window.Event('change'));
+    expect(new URLSearchParams(window.location.search).get('scale')).toBe('minor');
+  });
+
+  it('ignores a malformed query and falls back to a valid random state', async () => {
+    setSearch('?rule=notanumber&seed=-1&scale=lydian&tempo=999');
+    await loadMain();
+    const rule = Number(document.getElementById('rule-number').textContent);
+    expect(rule).toBeGreaterThanOrEqual(0);
+    expect(rule).toBeLessThanOrEqual(255);
+    // Unknown scale dropped -> default 'major'.
+    expect(document.getElementById('scale-select').value).toBe('major');
   });
 });
 
