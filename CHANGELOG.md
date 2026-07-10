@@ -3,7 +3,23 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
+## [1.0.0] - 2026-07-10
+
+First public release, shipping as **Murmur**.
+
+- Shareable URL state: rule, seed, scale, root, and tempo are encoded in the
+  link, and a Share button copies a URL that reproduces the exact pattern and
+  melody. Malformed or hostile URLs degrade to defaults instead of a blank page.
+- The stage pre-fills with a silently evolved preview on load and after reset,
+  so the panel shows the pattern immediately instead of an empty grid.
+- Landing page and marketing pass: the servable app doubles as its own landing
+  page with a wordmark, an about section, a FAQ, page/OpenGraph metadata, and a
+  portfolio footer.
+- Accessibility polish: 44px touch targets, focus-visible states on every
+  control, `aria-label`s on icon buttons, and live-region status text.
+- 124 tests green; core library at 100% line / 97% branch coverage.
+
+## [0.1.0]
 
 - Wow moment implemented: pressing Play draws a random rule and seed and
   starts a scrolling automaton with synchronized, scale-quantized generative
