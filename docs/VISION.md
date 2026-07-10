@@ -43,10 +43,11 @@ scrolling past *are* being played, in the order they're computed.
   30 — stay listenable, which is what makes "nudge a rule bit, hear it
   shift" a *pleasant* experience instead of a grating one.
 - **Zero samples, all synthesis.** Every sound is an `OscillatorNode` shaped
-  by a `GainNode` envelope (plus a shared reverb/delay bus for lushness).
-  This keeps the repo dependency-free and means the timbre itself can react
-  to automaton state (e.g. neighbor count → filter cutoff) later without
-  needing new assets.
+  by a `GainNode` ADSR envelope, summed through a shared master gain and a
+  `DynamicsCompressorNode` so simultaneous notes never clip. This keeps the
+  repo dependency-free and means the timbre itself can react to automaton
+  state (e.g. neighbor count → filter cutoff) later without needing new
+  assets.
 - **The rule is the primary control surface.** Rather than a wall of sliders,
   the 8 bits of the rule number are exposed as 8 toggles corresponding to
   each of the 8 possible 3-cell neighborhoods. Flipping one bit is the single
