@@ -3,11 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cellular Symphony</title>
+    <title>Murmur - Watch simple rules turn into music</title>
     <meta
       name="description"
-      content="A cellular automaton that composes its own generative music, live."
+      content="Murmur turns a cellular automaton into generative music you can hear. Flip one bit of a Wolfram rule and watch the pattern and the melody change together, in the browser."
     />
+    <meta property="og:title" content="Murmur - Watch simple rules turn into music" />
+    <meta
+      property="og:description"
+      content="A cellular automaton that plays itself. Flip a rule bit and hear the pattern change, then share the exact one you found as a link."
+    />
+    <meta property="og:type" content="website" />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -24,8 +30,25 @@
   <body>
     <main id="app">
       <header class="panel-header">
-        <h1 class="wordmark">Cellular<span class="wordmark-accent">Symphony</span></h1>
-        <p class="tagline">a cellular automaton that composes its own music, live</p>
+        <div class="header-brand">
+          <h1 class="wordmark">Mur<span class="wordmark-accent">mur</span></h1>
+          <p class="tagline">watch simple rules turn into music</p>
+        </div>
+        <a
+          class="repo-link"
+          href="https://github.com/ctkrug/cellular-symphony"
+          target="_blank"
+          rel="noopener"
+          aria-label="View Murmur on GitHub"
+        >
+          <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" focusable="false">
+            <path
+              fill="currentColor"
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
+            />
+          </svg>
+          <span>GitHub</span>
+        </a>
       </header>
 
       <div class="rack">
@@ -85,6 +108,87 @@
         </aside>
       </div>
     </main>
+
+    <section class="about" aria-label="About Murmur">
+      <div class="about-inner">
+        <h2>A cellular automaton you can hear</h2>
+        <p>
+          Murmur runs an elementary cellular automaton (Wolfram's rules 0 to 255) and
+          plays it as it evolves. One row of cells is computed each beat and drawn top to
+          bottom like a piano roll. The moment a row is calculated, every live cell in it
+          triggers a note, so the pattern scrolling down the screen and the melody in your
+          ears are the same event. Nothing is pre-recorded and there are no audio files:
+          each note is a Web Audio oscillator shaped by a short envelope.
+        </p>
+        <p>
+          The rule itself is the instrument. A rule is an 8-bit number, and Murmur lays
+          those 8 bits out as 8 switches, one for each three-cell neighbourhood. Flip a
+          single switch and the next row changes shape and the notes it plays change with
+          it, immediately, with no restart. Notes are quantised to a scale you pick (major,
+          minor, or pentatonic) and a root note, which is the trick that keeps even chaotic
+          rules like rule 30 sounding musical instead of harsh. Set the tempo from 1 to 12
+          steps per second, mute with one button, and reset to draw a fresh random pattern.
+        </p>
+        <p>
+          Every pattern you land on lives in the URL. Rule, seed, scale, root, and tempo
+          are all encoded in the link, so the Share button copies a URL that reproduces the
+          exact same picture and the exact same sequence of notes for anyone who opens it.
+          Found a rule that sounds good? Send the link. There is no account, no install, and
+          nothing to configure before the first sound plays.
+        </p>
+        <p>
+          If you want somewhere to start, the preset gallery collects rules that are known
+          to be interesting: rule 90 draws the Sierpinski triangle, rule 110 is
+          Turing-complete, rule 184 models traffic flow, and rule 30 is genuinely chaotic.
+          Pick one and it starts playing straight away.
+        </p>
+
+        <h2>FAQ</h2>
+        <dl class="faq">
+          <dt>What is a cellular automaton?</dt>
+          <dd>
+            A grid of cells, each either on or off, that updates on a simple fixed rule
+            applied to every cell's neighbours. Elementary automata use a one-dimensional
+            row and a rule numbered 0 to 255. Simple rules can produce surprisingly complex,
+            even chaotic, patterns, which is what makes them fun to watch and hear.
+          </dd>
+          <dt>How does a cellular automaton make music?</dt>
+          <dd>
+            Murmur maps each column of the grid to a note in the scale you choose. When a
+            cell in the newest row is alive, its column's note is played. Because the notes
+            are computed the instant the row is, the sound and the visual are perfectly in
+            sync.
+          </dd>
+          <dt>Do I need to install anything or sign up?</dt>
+          <dd>
+            No. Murmur runs entirely in the browser with the Web Audio API. Open the page,
+            press Play, and it works. Sound starts on your first click because browsers only
+            allow audio after a user gesture.
+          </dd>
+          <dt>Can I share the pattern I made?</dt>
+          <dd>
+            Yes. The current rule, seed, scale, root, and tempo are stored in the page URL,
+            so the Share button copies a link that recreates the exact same pattern and
+            melody on any device.
+          </dd>
+          <dt>Is the sound recorded or generated?</dt>
+          <dd>
+            Generated. Every note is synthesised live from an oscillator and a gain
+            envelope. There are no samples or audio files anywhere in the project.
+          </dd>
+        </dl>
+
+        <footer class="site-footer">
+          <a href="https://github.com/ctkrug/cellular-symphony" target="_blank" rel="noopener"
+            >Source on GitHub</a
+          >
+          <a href="https://apps.charliekrug.com" target="_blank" rel="noopener"
+            >More by Charlie Krug → apps.charliekrug.com</a
+          >
+        </footer>
+      </div>
+    </section>
+
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

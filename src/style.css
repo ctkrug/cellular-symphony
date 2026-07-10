@@ -55,8 +55,42 @@ body {
 
 .panel-header {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.header-brand {
+  display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 0.85rem;
+  min-height: 44px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-decoration: none;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: color var(--transition), transform 120ms ease-out, box-shadow var(--transition);
+}
+
+.repo-link:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.repo-link:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
 }
 
 .wordmark {
@@ -436,6 +470,87 @@ select:focus-visible {
 }
 
 .preset-button:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+/* ---------- about / faq (below the fold) ---------- */
+
+.about {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(180deg, var(--bg) 0%, #101216 100%);
+  padding: var(--space-6) var(--space-3);
+}
+
+.about-inner {
+  max-width: 68ch;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.about h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin: var(--space-3) 0 0;
+  color: var(--text);
+}
+
+.about h2:first-child {
+  margin-top: 0;
+}
+
+.about p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.65;
+  font-size: 0.9rem;
+}
+
+.faq {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.faq dt {
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.faq dd {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.88rem;
+}
+
+.site-footer {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  justify-content: space-between;
+}
+
+.site-footer a {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.site-footer a:hover {
+  color: var(--accent-2);
+}
+
+.site-footer a:focus-visible {
   outline: 2px solid var(--accent-2);
   outline-offset: 2px;
 }
