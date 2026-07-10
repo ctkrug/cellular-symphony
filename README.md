@@ -1,78 +1,94 @@
-# Cellular Symphony
+# Murmur
+
+**▶ Live demo: [apps.charliekrug.com/cellular-symphony](https://apps.charliekrug.com/cellular-symphony/)**
 
 [![CI](https://github.com/ctkrug/cellular-symphony/actions/workflows/ci.yml/badge.svg)](https://github.com/ctkrug/cellular-symphony/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-c9a227.svg)](LICENSE)
 
-A cellular automaton that composes its own generative music, live. Every cell
-state maps to a note and timbre, so a pattern's evolution is something you
-watch **and** hear unfold together — no pre-baked samples, no separate score.
+Watch simple rules turn into music. Murmur runs an elementary cellular
+automaton (Wolfram's rules 0 to 255) and plays it as it evolves: each new row
+of cells is drawn top to bottom like a piano roll, and the instant a row is
+computed, every live cell in it triggers a note. The pattern you see scrolling
+down and the melody you hear are the same event, in sync, the whole time.
 
-Hit play on a rule and the automaton starts scrolling while a genuinely
-listenable, evolving melody plays in sync. Nudge a single bit of the rule and
-both the visual pattern and the music audibly shift — the cause-and-effect
-between what's on screen and what's in your ears stays legible the whole time,
-which is the piece most generative-music toys leave out.
+Flip a single bit of the rule and both the picture and the music change on the
+next row, with no restart. That cause and effect between what is on screen and
+what is in your ears is the part most generative-music toys leave out.
 
-## Why
+## Who it's for
 
-Elementary cellular automata (Wolfram's rule 0–255) are visually compelling on
-their own, and generative music systems are compelling on their own, but the
-two are rarely wired together in a way where you can actually *see* what's
-driving the sound. Cellular Symphony renders a 1D automaton as a scrolling
-grid and sonifies each new row the instant it's computed — the automaton
-*is* the score, not an input to one.
+Generative-music tinkerers and creative coders who like a browser toy they can
+play with in ten seconds and share with a link. No account, no install, and a
+sound plays on your very first click.
+
+## Try it
+
+1. Open the [live demo](https://apps.charliekrug.com/cellular-symphony/).
+2. Press **Play**. A random rule starts scrolling and a melody plays in sync.
+3. Flip any of the 8 rule-bit switches and hear the pattern change immediately.
+4. Pick a **scale**, **root**, and **tempo**; try a preset like rule 90 or 110.
+5. Hit **Share** to copy a link that reproduces your exact pattern and melody.
 
 ## How it works
 
 - A **1D elementary cellular automaton** advances one row per tempo tick,
-  rendered top-to-bottom like a piano roll.
-- Each column index maps to a **scale degree** (major / minor / pentatonic,
-  configurable root note), so live cells in that row trigger notes —
-  quantized to a musical scale so arbitrary rules stay musical instead of
-  noisy.
-- Notes are synthesized entirely with the **Web Audio API**
-  (`OscillatorNode` + envelope-shaped `GainNode`s) — zero audio files.
-- The 8-bit rule number is exposed as 8 individual toggles, so flipping one
-  bit changes the next row's pattern *and* the resulting notes immediately.
-- Rule, seed, tempo, and scale are encoded in the URL so a link reproduces
-  the exact same visual + musical sequence.
+  rendered top-to-bottom like a scrolling piano roll.
+- Each column maps to a **scale degree** (major / minor / pentatonic, with a
+  configurable root), so live cells trigger notes. Quantising to a scale is
+  what keeps even chaotic rules like rule 30 listenable instead of noisy.
+- Notes are synthesised entirely with the **Web Audio API** (`OscillatorNode`
+  plus an envelope-shaped `GainNode`, summed through a compressor). Zero audio
+  files.
+- The 8-bit rule number is exposed as **8 individual switches**, so flipping one
+  bit changes the next row's pattern *and* its notes the moment you click.
+- Rule, seed, scale, root, and tempo are encoded in the **URL**, so a link
+  reproduces the exact same visual and musical sequence on any device.
 
 ## Features
 
-- [x] Elementary CA engine (rule 0–255, toroidal or dead-edge boundary, seedable initial row)
-- [x] Cell → scale-quantized note mapping (major / minor / pentatonic, root note)
-- [x] Oscillator-based synth voice with ADSR envelope and a shared compressor
-- [x] Transport: play / pause / reset, tempo control (1–12 steps/sec), mute (persisted)
-- [x] Live 8-bit rule editor with instant visual + audio feedback
-- [x] Curated preset rule gallery (rule 30, 90, 110, 184, ...)
-- [x] Shareable URL state (rule, seed, scale, root, tempo) with a copy-link button
-- [x] Fully static, relative-path build deployable to a subpath
-
-See [`docs/VISION.md`](docs/VISION.md) for the full design rationale and
-[`docs/BACKLOG.md`](docs/BACKLOG.md) for the build plan.
+- Elementary CA engine (rule 0–255, toroidal or dead-edge boundary, seedable row)
+- Cell → scale-quantised note mapping (major / minor / pentatonic, any root)
+- Oscillator synth voice with an ADSR envelope and a shared compressor
+- Transport: play / pause / reset, tempo (1–12 steps/sec), mute (persisted)
+- Live 8-bit rule editor with instant visual and audio feedback
+- Curated preset gallery (rule 30, 90, 110, 184, and more)
+- Shareable URL state with a one-click copy-link button
+- Fully static, relative-path build deployable to a subpath
 
 ## Stack
 
-Vanilla JavaScript + the Web Audio API, bundled with [Vite](https://vitejs.dev/),
-tested with [Vitest](https://vitest.dev/). No framework, no backend — the
-production build is a single static `dist/` directory.
+Vanilla JavaScript and the Web Audio API, bundled with
+[Vite](https://vitejs.dev/) and tested with [Vitest](https://vitest.dev/). No
+framework and no backend; the production build is a single static directory.
 
 ## Getting started
 
 ```bash
 npm install
 npm run dev      # local dev server
-npm test         # unit tests
+npm test         # unit + DOM smoke tests
 npm run build    # static production build in dist/
 ```
 
 | Script | What it does |
 |---|---|
 | `npm run dev` | Vite dev server with hot reload |
-| `npm test` | Vitest unit + DOM smoke tests |
+| `npm test` | Vitest unit + jsdom smoke tests |
+| `npm run coverage` | Test run with a coverage report |
 | `npm run lint` | ESLint over the whole repo |
 | `npm run build` | Static production build to `dist/` (relative paths, subpath-safe) |
 | `npm run preview` | Serve the production build locally |
 
+## Documentation
+
+- [`docs/VISION.md`](docs/VISION.md): the design rationale and core idea.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): module map and data flow.
+- [`docs/DESIGN.md`](docs/DESIGN.md): visual direction and tokens.
+
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+MIT. See [`LICENSE`](LICENSE).
+
+---
+
+More of Charlie's projects → [apps.charliekrug.com](https://apps.charliekrug.com)
